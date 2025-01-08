@@ -4,6 +4,8 @@ from flask_bcrypt import Bcrypt
 db = SQLAlchemy()
 bcrypt = Bcrypt()  # Initialize Bcrypt
 
+
+
 # User model for authentication
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)    # User ID

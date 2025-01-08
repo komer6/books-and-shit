@@ -1,18 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-from flask_sqlalchemy import SQLAlchemy 
+from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
 import os
-from alembic import op
-import sqlalchemy as sa
 
 # Import models
 from models import db, User, Book
 
 app = Flask(__name__)
-migrate = Migrate(app, db)
 
 # Configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///instance/books.db'
@@ -22,6 +19,10 @@ app.config['SECRET_KEY'] = 'your_secret_key'  # Secret key for sessions
 # Initialize extensions
 db.init_app(app)
 bcrypt = Bcrypt(app)
+
+# Create all tables before running the app
+with app.app_context():
+    db.create_all()
 
 # Routes
 @app.route('/')
@@ -88,9 +89,4 @@ def inject_current_user():
     return {'current_user': get_current_user()}
 
 if __name__ == "__main__":
-    def aaa():
-        op.drop_table('user')
-def downgrade():
-    aaa()
-    # Typically, we don't have a downgrade step for this action
-    pass
+    app.run(debug=True)
